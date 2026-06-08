@@ -36,9 +36,51 @@ my_data <- read_csv(here("data/screen_time.csv"))
 
 # bringing in nest_data_final.csv with read_csv function and storing it 
 #   as object called nest_data
-nest_data <- read_csv(here("data/nest_data_final.csv"))
+nests <- read_csv(here("data/nest_data_final.csv"))
 
 ```
+
+## Problem 1. Research writing
+
+a. Transparent statistical methods\newline
+
+In part 1 of the results section, they used a logistic regression. In part 2 of the results sections, they used a chi squared test.
+
+b. Suggestions for rewriting\newline
+
+Our results suggest that distance to water edge predicts the probability of American Avocet microhabitat use. In addition, we found evidence to support that there is a relationship between birds species (American Avocet, Foster's Tern, Black-necked Stilt) and habitat (managed pond, non-tidal marsh, salt pond, tidal marsh, or tidal mudflat).
+
+c. Further analysis\newline
+
+Algae concentration is another variable that could influence the probability of American Avocet microhabitat use as algae is another important primary producer in aquatic ecosystems that influences food availability. It is a continuous predictor variable measured in mg dry weight/L water, and it can be collected in 1 liter containers with the dry weight measured in lab. 
+
+## Problem 2. Data analysis
+
+
+
+
+
+## Problem 3. Affective and exploratory visualizations
+
+a. Comparing visualizations\newline
+
+content
+
+b. Designing an analysis\newline
+
+One analysis I could apply to answer my research question of how my computer screen time compares on weekdays vs weekends is a t-test. This would be an appropriate test to answer my question as it would compare the average screen time on weekdays vs weekends. It makes sense for the predictor variable as weekday vs weekend are categorical predictor variables that can be used as the groups that I am comparing. It makes sense for the response variable of computer screen time as that is a continuous variable. 
+
+c. Check any assumptions and run your analysis\newline
+
+Checking for equal variances
+```{r}
+
+var.test
+
+
+
+```
+
 
 
 
