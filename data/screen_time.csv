@@ -1,0 +1,50 @@
+date,weekday,day,time_class,time_activities,number_activities,time_exercise,computer_time,phone_time,online_lecture,notes,notes_activities
+04-20-26,y,mon,75,120,2,60,295,107,0,,"mindfulness, biking"
+04-21-26,y,tue,75,150,3,90,134,206,67,,"meeting, farm"
+04-22-26,y,wen,0,50,1,0,286,236,56,sick,
+04-23-26,y,thu,0,120,1,120,377,145,0,less sick ,farm
+04-24-26,y,fri,170,240,2,0,95,126,110,,110 for es 193 section
+04-25-26,n,sat,0,450,2,0,175,96,0,,"ocean, pizza night, party"
+04-26-26,n,sun,0,270,2,0,236,166,0,,"tjs, albertsons, potluck"
+04-27-26,y,mon,150,180,2,0,176,172,0,,"mindful, standup"
+04-28-26,y,tue,75,435,3,135,131,145,0,,"meeting, sproutup, farm"
+04-29-26,y,wen,260,95,1,0,270,110,0,,austin powers 2
+04-30-26,y,thu,75,120,1,120,257,162,0,,farm
+05-01-26,y,fri,170,420,1,0,224,69,110,,hanging w Charlotte
+05-02-26,n,sat,0,360,2,30,209,141,0,,"run w dieter, prom"
+05-03-26,n,sun,0,190,2,90,126,211,0,,"arm farm, pardall carnival"
+05-04-26,y,mon,75,120,1,0,218,200,0,,shopping
+05-05-26,y,tue,75,240,3,30,147,153,0,,"meeting, run, chilis"
+05-06-26,y,wen,187.5,165,3,0,215,62,0,,"crowfoot, interview, yong"
+05-07-26,y,thu,0,165,1,165,300,238,0,,"farm, farm meeting doesn't count"
+05-08-26,y,fri,150,180,2,0,100,185,45,es 193,"zombies w Ev, dance show"
+05-09-26,n,sat,0,360,2,0,235,295,0,,"sedgwick, suenotopia"
+05-10-26,n,sun,0,240,2,30,184,195,0,,"run, prom"
+05-11-26,y,mon,150,180,2,0,202,150,0,,"psych, standup"
+05-12-26,y,tue,75,300,3,120,100,217,0,,"meeting, farm, dance show"
+05-13-26,y,wen,135,60,1,30,344,175,45,physics videos,run
+05-14-26,y,thu,75,120,2,120,525,179,0,,"farm, farm meeting doesn't count"
+05-15-26,y,fri ,180,240,2,0,194,137,110,,"dinner, zombies"
+05-16-26,n,sat,0,510,4,0,103,97,0,,"birding, lunch, dinner, bandshow"
+05-17-26,n,sun,0,480,2,0,16,156,0,,"breakfast, extravaganza"
+05-18-26,y,mon,75,390,4,120,214,218,0,,"surfing, mindfulness, dinner, standup"
+05-19-26,y,tue,60,135,3,30,325,302,0,late to class,"meeting, shopping, run "
+05-20-26,y,wen,150,90,1,0,262,106,0,,
+05-21-26,y,thu,75,465,1,0,187,144,0,,"farm, farm meeting, tristan party"
+05-22-26,y,fri,245,120,1,0,176,150,110,es 193,anthill party
+05-23-26,n,sat,0,345,2,0,81,86,0,,"oyster, pcn"
+05-24-26,n,sun,0,420,2,360,217,264,0,,"hike, dinner"
+05-25-26,y,mon,0,180,2,30,141,304,0,three day weekend,"run, standup"
+05-26-26,y,tue,75,240,2,0,170,98,0,,"meeting, farm"
+05-27-26,y,wen,100,0,0,0,235,224,0,late to wrt107,
+05-28-26,y,thu ,75,120,1,0,409,151,0,,"farm, farm meeting doesn't count"
+05-29-26,y,fri,140,255,2,0,211,191,110,es193,"ecstatic, reeloud"
+05-30-26,n,sat,0,240,1,0,280,183,0,,going out
+05-31-26,n,sun ,0,210,2,120,262,93,0,,"surf, zombies"
+06-01-26,y,mon,150,90,1,0,280,113,0,,mindfulness potluck
+06-02-26,y,tue,270,135,1,0,209,100,0,es 95 today,farm
+06-03-26,y,wen,150,195,2,30,56,141,0,,"run, dance show"
+06-04-26,y,thu,0,90,1,0,515,147,0,class was computer work time,ncos party
+06-05-26,y,fri,70,120,1,0,211,125,0,,kash party
+06-06-26,n,sat,0,60,1,30,178,82,0,,run
+06-07-26,n,sun,0,105,3,0,354,120,0,last observation,"lie down, theatre, screening"

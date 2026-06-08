@@ -1,0 +1,45 @@
+---
+title: "ENVS 193 Final Script"
+author: "Jared Umphress"
+subtitle: "June 9, 2026"
+format: pdf
+
+execute:
+  warning: false
+  message: false
+---
+
+## Set Up\newline
+
+[Link to GitHub repository](https://github.com/Jared363/ENVS-193DS_spring-2026_final)
+
+
+Read in packages 
+```{r}
+
+library(tidyverse)
+library(here)
+library(janitor)
+library(readxl)
+library(ggplot2)
+library(ggeffects)
+library(flextable)
+
+```
+
+Read in data
+```{r}
+
+# bringing in screen_time.csv (personal data) with read_csv function 
+#   and storing it as object called my_data
+my_data <- read_csv(here("data/screen_time.csv"))
+
+# bringing in nest_data_final.csv with read_csv function and storing it 
+#   as object called nest_data
+nest_data <- read_csv(here("data/nest_data_final.csv"))
+
+```
+
+
+
+
