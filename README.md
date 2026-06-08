@@ -15,4 +15,4 @@ nest_data_final.csv
 
 ## Rendered output
 
-[Link to Rendered Output](https://github.com/Jared363/ENVS-193DS_spring-2026_final)
+[Link to Rendered Output](https://github.com/Jared363/ENVS-193DS_spring-2026_final/blob/main/code/es193_final_script1.pdf)
