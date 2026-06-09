@@ -9,10 +9,6 @@ execute:
   message: false
 ---
 
-Questions for Professor Bui:
-- If I am comparing means would it be better to make a point range graph?
-
-
 ## Set Up\newline
 
 [Link to GitHub repository](https://github.com/Jared363/ENVS-193DS_spring-2026_final)
@@ -254,16 +250,32 @@ ggplot(data = nests_clean, # using nests_clean data
         legend.position = "none") 
 
 ```
+**Figure 1: Predicted Probability of Bird Nest Occurence Differs By Ant Species and Tree Height** There are three panels for the three ant species where purple represents *Crematogaster mimosae*, green represents *Crematogaster nigriceps*, and blue represents *Crematogaster sjostedti*. The x-axis is the acaica tree height, measured in centimeters. The y-axis is the predicted probability of the presence of a bird nest in an acacia tree. The open circle points represent actual observations of nest presence or absence in the acacia trees. The darker lines represent the model predictions of the probability of the nest presence for a given ant species and tree height. The ribbons above and below the dark lines represent a 95% confidence interval for the predicted probability of nest presence. Data originally from: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nderitu Watetu, W., Malingati Khasoha, L., Palmer, T. M., Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic acacia ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8373322
 
-i. 
+i. Write a caption for your figure\newline
 
+Caption below the figure above. 
 
+j. Calculate model predictions\newline
 
+```{r}
 
+# using ggpredict function to calculate 
+#   predicted probability of nest occurrence for a given height
+ggpredict(
+          # using model 2
+          nest_model_2, 
+          # calculating predicted nest probability with
+          #    a tree height of 600 cm as the first term
+          # the species of ant is the second term
+          terms = c("height_cm [600]",
+                    "species_name"))
 
+```
 
+k. Interpret your results\newline
 
-
+At an Acacia Tree Height of 600 cm, the predicted probability of a nest occurence is 0.2 (95% CI [0.00,0.99]) when *Crematogaster sjostedti* ants are present, 0.74 (95% CI[0.48,0.90]) when *Crematogaster mimosae* are present, and 1.00 (95% CI[1.00,1.00]) when *Crematogaster nigriceps* are present. Acacia tree height and ant species present interact to predict the probability of nest occurence in Acacia trees. As Acacia tree height increases, the predicted probability of nest occurence increases. Both *Crematogaster mimosae* and *Crematogaster nigriceps* both had higher predicted nest occurences than *Crematogaster sjostedti* likely because they are more aggressive defenders of the acacia trees and by extension the bird nests. *Crematogaster nigriceps* in particular had the highest predicted nest occurences because in addition to being an aggressive defender, *Crematogaster nigriceps* creates a denser canopy through the pruning of its trees which provides additional concealment of bird nests and thus increases the likelihood that the birds will nest in their trees. 
 
 
 ## Problem 3. Affective and exploratory visualizations
