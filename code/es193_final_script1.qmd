@@ -56,8 +56,61 @@ Algae concentration is another variable that could influence the probability of 
 
 ## Problem 2. Data analysis
 
+a. Clean and wrangle\newline
+```{r}
+
+# cleaning nests data and storing it as nests_clean
+nests_clean <- nests |>
+  # selecting for just three columns
+  select(height_cm, case_control, ant_species) |>
+  # filtering for only three ant species
+  filter(ant_species %in% c("RRB","AB","BBR")) |>
+  # creating a new column to store full scientific names for ants
+  #   based on abreviations
+   mutate(species_name = case_match(
+    ant_species,
+    "RRB" ~ "Crematogaster mimosae", 
+    "AB" ~ "Crematogaster sjostedti", 
+    "BBR" ~ "Crematogaster nigriceps"
+  )) |>
+  # ordering the species level
+  mutate(ant_species = as_factor(ant_species),
+         ant_species = fct_relevel(ant_species,
+                                       "AB",
+                                       "RBR",
+                                       "BBR"))
+
+# display structure of nests_clean data
+str(nests_clean)
+
+# display 10 random rows from the nests_clean data
+slice_sample(nests_clean, 
+             n = 10, 
+             by = NULL, 
+             weight_by = NULL, 
+             replace = FALSE)
+
+```
+
+b. Response variable\newline
+
+For the nest occurence response variable, a 1 indicates that that a tree contained a nest, and 0 indicates that a tree was available for a nest. 
+
+c. Purpose of study\newline
+
+Tree height, one of the predictor variables, is a continuous variable. As tree height increases, the probability of nest occurence would increase because the nests are further off the ground and harder to get to for predators (Results, paragraph 2).
+
+Ant species, the other predictor variable, is a categorical variable with the four ant species representing four categories. The presence of *C. nigriceps* and *C. mimosae* would increase nest occurence as they are aggressive defenders of host trees and thus can reduce the risk of nest predation compared to *C. sjostedi* and *T. penzigi* which are less aggressive host tree defenders (Discussion, paragraph 1). In addition, *C. nigriceps* in particular can increase nest occurance because its pruning of the apial buds results in denser canopies which can provide further concealment of bird nests from predators (Discussion, paragraph 2).
+
+d. Table of models\newline
+
+| Model number | height_cm | species_name | Interaction?              |  
+|--------------|:---------:|:------------:|:-------------------------:|
+| 0            |  X        |      X       |  No interaction (+)       |
+| 1            |  X        |      X       |  Yes Interaction (*)      | 
 
 
+e. 
 
 
 ## Problem 3. Affective and exploratory visualizations
