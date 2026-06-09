@@ -9,6 +9,10 @@ execute:
   message: false
 ---
 
+Questions for Professor Bui:
+- If I am comparing means would it be better to make a point range graph?
+
+
 ## Set Up\newline
 
 [Link to GitHub repository](https://github.com/Jared363/ENVS-193DS_spring-2026_final)
@@ -24,6 +28,8 @@ library(readxl)
 library(ggplot2)
 library(ggeffects)
 library(flextable)
+library(MuMIn)
+library(DHARMa)
 
 ```
 
@@ -98,7 +104,7 @@ For the nest occurence response variable, a 1 indicates that that a tree contain
 
 c. Purpose of study\newline
 
-Tree height, one of the predictor variables, is a continuous variable. As tree height increases, the probability of nest occurence would increase because the nests are further off the ground and harder to get to for predators (Results, paragraph 2).
+Tree height, one of the predictor variables, is a continuous variable. As tree height increases, the probability of nest occurrence would increase because the nests are further off the ground and harder to get to for predators which reduces nest predation, which can increase lifetime fitness in birds (Discussion, paragraph 1). In addition, taller trees likely have more branches and leaves which can create a denser canopy with or without the help of *C. nigriceps* that can provide further concealment of bird nests from predators (Discussion, paragraph 1).
 
 Ant species, the other predictor variable, is a categorical variable with the four ant species representing four categories. The presence of *C. nigriceps* and *C. mimosae* would increase nest occurence as they are aggressive defenders of host trees and thus can reduce the risk of nest predation compared to *C. sjostedi* and *T. penzigi* which are less aggressive host tree defenders (Discussion, paragraph 1). In addition, *C. nigriceps* in particular can increase nest occurance because its pruning of the apial buds results in denser canopies which can provide further concealment of bird nests from predators (Discussion, paragraph 2).
 
@@ -143,7 +149,113 @@ nest_model_2
 
 ```
 
-f. 
+f. Select the best model\newline
+
+```{r}
+
+# AICc is Akaike's Information Criterion function
+AICc(
+  # running AIC for model 1 and model 2
+  nest_model_1,
+  nest_model_2
+) |>
+  # arranging the AIC scores by lowest at the top and highest at the bottom
+  arrange(AICc)
+
+```
+
+The best model as determined by Akaike's Information Criterion (AIC) had case factor as the response variable with tree height and ant species as interacting predictor variables. 
+
+g. Check the diagnostics\newline
+
+```{r}
+#| fig-height: 8
+#| fig-width: 12
+
+
+# checking diagnostics using simulated residuals function
+plot(
+  simulateResiduals(nest_model_2)
+)
+
+```
+
+The points follow the QQ line relatively closely indicating that the residuals of the model follow a uniform distribution. The not significant dispersion result tells us that our residuals are not more dispersed than expected from the uniform distribution mentioned in the prior sentence. The not sigificant result for the outlier test tells us that there do not appear to be any outliers that could affect the model coefficients or predictions. The plot on the right shows us that the homoscedasticity, or variance of residuals overtime, stay relatively constant over time. All of these results tell us that the data fits the model assumptions and thus we can use a logistic regression to predict values for the response variable of nest probability. 
+
+h. Visualize the model predictions\newline
+
+```{r}
+
+# model predictions
+nest_predictions <- ggpredict(
+  nest_model_2,   # model object
+  terms = c("height_cm[all]", "species_name")   # predictor (in quotation marks)
+) |>
+  rename(species_name = group)
+
+```
+
+```{r}
+# ggplot is base layer
+ggplot(data = nests_clean, # using nests_clean data
+       mapping = aes(
+                     # x-axis is height
+                     x = height_cm, 
+                     # y axis is case_control (nest probability)
+                     y = case_control, 
+                     # coloring by species_name factor
+                     color = as.factor(species_name))) +
+  # changing ant colors manually
+  scale_color_manual(values = c("Crematogaster sjostedti" = "skyblue",
+                                "Crematogaster mimosae" = "orchid3",
+                                "Crematogaster nigriceps" = "springgreen3")) +
+  # changing ant fill colors manually
+  scale_fill_manual(values = c("Crematogaster sjostedti" = "skyblue",
+                                "Crematogaster mimosae" = "orchid3",
+                                "Crematogaster nigriceps" = "springgreen3")) +
+  # geom points is first layer 
+  geom_point(
+             mapping = aes(x = height_cm, # x-axis is acacia tree height
+                           y = case_control, # y-axis is nest occurrence
+                           color = species_name), # set to selected colors
+             shape = 21, # change to open circle shape 
+             alpha = 0.6 # changing transparency
+            ) + 
+  # second layer is geom line, showing predictions
+  geom_line(data = nest_predictions, # data from model 2 prediction
+            mapping = aes(x = x, # x-axis is height of acacia tree
+                          y = predicted, # y axis is prediction 
+                                         # of nest probability
+                          color = species_name), # color by ant species
+            linewidth = 1) +
+  # third layer is geom_ribbon to show 95% confidence interval
+  geom_ribbon(data = nest_predictions, # using data from model 2 prediction
+              mapping = aes(x = x, # x-axis height of acacia
+                            ymin = conf.low, # set low value
+                            ymax = conf.high, # set high value
+                            fill = species_name), # fill color by ant species
+              inherit.aes = FALSE, # ignore global aes       
+              alpha = 0.4) + # changing transparency
+  # create a panel for each ant species
+  facet_wrap(~ species_name) +   
+  # relabeling x- and y-axis
+  labs(x = "Height of Acacia Tree (cm)", 
+       y = "Predicted Probability of Nest Presence", 
+       color = "species_name", # color by ant species
+       title = "Predicted Nest Presence by Ant Species and Acacia Height (cm)") +
+  # changing theme from default
+  theme_minimal() +
+  theme(
+        # removing panel background
+        panel.background = element_rect(),
+        # removing panel grid lines
+        panel.grid = element_blank(),
+        # removing legend 
+        legend.position = "none") 
+
+```
+
+i. 
 
 
 
