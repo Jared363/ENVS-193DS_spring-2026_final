@@ -110,7 +110,48 @@ d. Table of models\newline
 | 1            |  X        |      X       |  Yes Interaction (*)      | 
 
 
-e. 
+e. Run the models\newline
+
+```{r}
+
+# running a generalized linear model using glm 
+#   and storing as nest_model_1 object
+nest_model_1 <- glm(
+                    # case_control as a response to height and species
+                    #   with no interaction
+                    case_control ~ height_cm + species_name,
+                    # using nests_clean data
+                    data = nests_clean,
+                    # setting glm to binomial glm specifically
+                    family = "binomial")
+
+# display result of model 1
+nest_model_1
+
+
+nest_model_2 <- glm(
+                    # case_control as a response to height and species
+                    #   with interaction (using a * instead of +)
+                    case_control ~ height_cm * species_name,
+                    # using nests_clean data
+                    data = nests_clean,
+                    # setting glm to binomial glm specifically
+                    family = "binomial")
+
+# display result of model 2
+nest_model_2
+
+```
+
+f. 
+
+
+
+
+
+
+
+
 
 
 ## Problem 3. Affective and exploratory visualizations
