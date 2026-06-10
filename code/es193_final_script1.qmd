@@ -26,6 +26,7 @@ library(ggeffects)
 library(flextable)
 library(MuMIn)
 library(DHARMa)
+library(rstatix)
 
 ```
 
@@ -280,26 +281,213 @@ At an Acacia Tree Height of 600 cm, the predicted probability of a nest occurenc
 
 ## Problem 3. Affective and exploratory visualizations
 
+Cleaning my_data
+```{r}
+
+# cleaning my_data and storing it as object my_data_clean
+my_data_clean <- my_data |>
+  # dropping rows that contain NA values in the computer_time column
+  drop_na(computer_time) |>
+  # changing weekday variable inputs
+  mutate(weekday = case_when(
+    # y inputs in the weekday column are now displayed as Weekdays
+    # n inputs in the weekday column are not displayed as Weekends
+    weekday == "y" ~ "Weekdays",
+    weekday == "n" ~ "Weekends"
+  ))
+
+```
+
 a. Comparing visualizations\newline
 
-content
+Compare and contrast your affective visualization from Homework 3 and the exploratory visualizations you made for Homework 2. In 1-3 sentences each, explain:
+
+One of the differences between my exploratory visualization and affective visualization is that the exploratory visualization contains more quantitative information on precise computer screen time amounts between the weekdays and weekends. Nevertheless, my affective visualization is able to convey more emotionality on the differences in screen time through the water color background and chosen imagery for the weekdays and weekend pseudo-boxplots.\newline
+
+A similarity between the two visualizations is that they both include box plots that can generally show the reader which group, weekdays or weekends, had more computer screen time. They also both had ways of conveying which box plot was for which group with the exploratory visualization using words, and the affective visualization using a weekly calendar image to indicate weekdays vs weekends.\newline  
+
+What patterns (e.g. differences in means/counts/proportions/medians, trends through time, relationships between variables) do you see in each visualization? Are these different between visualizations? If so, why? If not, why not?
+
+In the exploratory visualization I can see that weekdays have higher median computer screen times and more observations on the weekdays. For the affective visualization I can see that in general weekdays have greater screen time and that the maximum screen time recorded on the weekdays is greater than the maximum recorded screen time on the weekends.\newline
+
+In the week 9 workshop, my peers gave me the feedback to increase the emotional contrast between the weekdays and weekends even more. I implemented that suggestion by adding dark clouds above the weekday boxplot, and adding a glimmer of light casted over the weekend box plot.\newline
 
 b. Designing an analysis\newline
 
-One analysis I could apply to answer my research question of how my computer screen time compares on weekdays vs weekends is a t-test. This would be an appropriate test to answer my question as it would compare the average screen time on weekdays vs weekends. It makes sense for the predictor variable as weekday vs weekend are categorical predictor variables that can be used as the groups that I am comparing. It makes sense for the response variable of computer screen time as that is a continuous variable. 
+One analysis I could apply to answer my research question of how my computer screen time compares on weekdays vs weekends is a two-sample t-test. This would be an appropriate test to answer my question of how computer screen time compare on weekdays vs weekends as it would compare the average screen time on weekdays vs weekends. It makes sense for the predictor variable as weekday vs weekend is a categorical predictor variables that can be used as the groups that I am comparing. It makes sense for the response variable of computer screen time as that is a continuous variable. 
 
 c. Check any assumptions and run your analysis\newline
 
-Checking for equal variances
+Checking that response variable is a continous variable:
+Looking at my data I can confirm that computer screen time is a continuous variable measured in minutes.\newline 
+
+Checking for independent observations:
+Measuring computer screen time on one day did not influence another day.\newline
+
+Check that the data is normally distributed:
 ```{r}
 
-var.test
+# ggplot as base layer
+ggplot(
+  # using kelp data
+  data = my_data_clean,
+  # plotting temperature 
+  mapping = aes(sample = computer_time)
+) +
+  # qq line is first layer
+  geom_qq_line() +
+  # qq points are second layer
+  # changing color of the points
+  geom_qq(color = 'tomato4') +
+  # setting theme as minimal
+  theme_minimal()
 
+```
+The qq points generally fall around the qq line with some tail off at the upper end. The computer_time response variable appears to be normally distributed enough. The central limi theorem also applies as there are more than 30 observations. 
+
+Checking for whether the variances are equal or not:
+```{r}
+
+# using var.test to perform a F-test of equal variance
+var.test(
+  # response ~ grouping 
+  computer_time ~ weekday,
+  # using my_data_clean data
+  data = my_data_clean
+)
+
+```
+The true ratio of variances is not equal to 1, and thus I will perform a Welch's two sample t-test.\newline
+
+Running my analysis: Welch's two sample t-test
+```{r}
+
+# performing a t-test using t.test function and storing it as my_data_t_test
+my_data_t_test <- t.test(
+  # response ~ grouping
+  computer_time ~ weekday,
+  # using cleaned data
+  data = my_data_clean,
+  # setting variances to be unequal 
+  #   since it is a Welch's two sampled t-test
+  var.equal = FALSE
+)
+
+my_data_t_test
+
+```
+
+Running a post-hoc test: Cohen's d
+```{r}
+
+# running cohen's d and storing it as object called
+# my_data_cohens_d
+my_data_cohens_d <- cohens_d(
+  # response ~ grouping
+  computer_time ~ weekday,
+  # using my_data_clean data
+  data = my_data_clean,
+  # not pooling standard deviations as the variances are not equal
+  var.equal = FALSE
+)
+
+my_data_cohens_d
+```
+
+
+
+d. Create a visualization
+```{r}
+
+# store my_data_clean summary data as the object my_data_summary
+my_data_summary <- my_data_clean |>
+  # group by the weekday vs weekend
+  group_by(weekday) |>
+  # beging summarizing both groups
+  summarise(
+    # calculate mean computer time
+    mean_computer_time = mean(computer_time),
+    # summarise number of observations for weekday vs weekend groups 
+    n = n(),
+    # calculate standard deviation for computer time
+    sd_computer_time = sd(computer_time)
+  )
+
+# display my_data_summary data frame
+my_data_summary
 
 
 ```
 
 
+```{r}
 
+# base layer is ggplot
+# data is my_data_clean
+ggplot(data = my_data_clean,
+       # weekday vs weekend group on the x axis
+       # computer screen time on the y axis
+       # coloring the points based on weekday vs weekend
+       mapping = aes(x = weekday,
+                     y= computer_time,
+                     color = weekday
+                     )) +
+  # first layer is a jitter plot
+  geom_jitter(
+              # width is set to 0.15 to tighten the horizontal jitter
+              width = 0.17,  
+               # height is set to 0 so that there is no vertical jitter
+              height = 0,  
+              # open circle point shape for jitter points
+              shape = 21,   
+               # increasing transparency so that it is easier to see the mean
+              alpha = 0.8  
+             ) +  
+  # adding a point that is the mean computer screen time of each group
+  # using my_data_summary
+  geom_pointrange(data = my_data_summary,  
+                  # points displayed based on weekday vs weekend grouping
+                  mapping = aes(x = weekday, 
+                                # mean computer time is the y value
+                                y = mean_computer_time,   
+                                # upper bound is the mean plus 
+                                #  a standard deviation
+                                ymax = mean_computer_time + sd_computer_time, 
+                                # lower bound is the mean minus 
+                                #  a standard deviation
+                                ymin = mean_computer_time - sd_computer_time)) +
+  # manually setting colors for the treatment groups
+  scale_color_manual(values = c("Weekdays" = "darkblue",
+                                "Weekends" = 'skyblue')) +
+  # changing y axi label and title
+  labs(x = "",
+       y = "Computer Screen Time (minutes)",
+       title = "Comparing Computer Screen Time on Weekdays vs Weekends"
+      ) +
+  # changing theme from default theme to theme_classical
+  theme_classic() +
+  # removing the legend 
+  theme(legend.position = "none",
+        # removing panel background
+        panel.background = element_rect(),
+        # removing panel grid lines
+        panel.grid = element_blank())
+
+```
+**Figure 2: There is no statistically significant difference in computer screen time between Weekdays and Weekends** Dark blue open points represent individual computer screen time observations on the weekdays whereas light blue open points represent individual computer screen time observations on the weekends. The filled in bigger points represents the mean computer screen time for both groups with the lines above and below the point representing one standard deviation above and below the mean. Data last updated: July 7, 2026.
+
+e. Write a caption\newline
+
+Caption written above.
+
+f. Write about your results\newline
+
+We did not find a significant difference in computer scree time between weekdays (n = 35, mean = 234 minutes) and weekends (n = 14, mean = 190 minutes; Welch's two sampled t-test, t(29.3) = 1.50, p = 0.1454, $\alpha$ = 0.05). 
+
+We found a small (Cohen's d = 0.452) effect of the day of the week (Weekdays vs Weekends) on computer screen time. 
+
+g. Sharing your affective visualization\newline
+
+I attended the workshop for week 10! It was a nice touch to sign eachother's papers. 
 
 
