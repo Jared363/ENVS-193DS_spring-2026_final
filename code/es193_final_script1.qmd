@@ -47,11 +47,11 @@ nests <- read_csv(here("data/nest_data_final.csv"))
 
 a. Transparent statistical methods\newline
 
-In part 1 of the results section, they used a logistic regression. In part 2 of the results sections, they used a chi squared test.
+In part 1 of the results section, they used a logistic regression. One can deduce this because the predictor variable of distance to water edge is continous, and the response variable of whether  an American Avocet uses a habitat is binary. In part 2 of the results sections, they used a chi squared test. One can deduce this because the results are comparing the relationship between two categorical variables: bird species and habitat type. 
 
 b. Suggestions for rewriting\newline
 
-Our results suggest that distance to water edge predicts the probability of American Avocet microhabitat use. In addition, we found evidence to support that there is a relationship between birds species (American Avocet, Foster's Tern, Black-necked Stilt) and habitat (managed pond, non-tidal marsh, salt pond, tidal marsh, or tidal mudflat).
+Our results suggest that distance to water edge predicts the probability of American Avocet microhabitat use. In addition, we found evidence to support that there is a relationship between birds species (American Avocet, Foster's Tern, Black-necked Stilt) and the habitats they are found in (managed pond, non-tidal marsh, salt pond, tidal marsh, or tidal mudflat).
 
 c. Further analysis\newline
 
@@ -80,7 +80,7 @@ nests_clean <- nests |>
   mutate(ant_species = as_factor(ant_species),
          ant_species = fct_relevel(ant_species,
                                        "AB",
-                                       "RBR",
+                                       "RRB",
                                        "BBR"))
 
 # display structure of nests_clean data
@@ -115,7 +115,7 @@ d. Table of models\newline
 
 e. Run the models\newline
 ```{r}
-#|output: FALSE
+#| output: false
 
 # running a generalized linear model using glm 
 #   and storing as nest_model_1 object
@@ -128,9 +128,6 @@ nest_model_1 <- glm(
                     # setting glm to binomial glm specifically
                     family = "binomial")
 
-# display result of model 1
-nest_model_1
-
 # running a generalized linear model using glm 
 #   and storing as nest_model_2 object
 nest_model_2 <- glm(
@@ -141,9 +138,6 @@ nest_model_2 <- glm(
                     data = nests_clean,
                     # setting glm to binomial glm specifically
                     family = "binomial")
-
-# display result of model 2
-nest_model_2
 
 ```
 
@@ -284,7 +278,7 @@ ggpredict(
 
 k. Interpret your results\newline
 
-At an Acacia Tree Height of 600 cm, the predicted probability of a nest occurrence is 0.2 (95% CI [0.00,0.99]) when *Crematogaster sjostedti* ants are present, 0.74 (95% CI[0.48,0.90]) when *Crematogaster mimosae* are present, and 1.00 (95% CI[1.00,1.00]) when *Crematogaster nigriceps* are present. Acacia tree height and ant species present interact to predict the probability of nest occurrence in Acacia trees. As Acacia tree height increases, the predicted probability of nest occurrence increases. Both *Crematogaster mimosae* and *Crematogaster nigriceps* both had higher predicted nest occurrences than *Crematogaster sjostedti* likely because they are more aggressive defenders of the Acacia trees and by extension the bird nests. *Crematogaster nigriceps* in particular had the highest predicted nest occurences because in addition to being an aggressive defender, *Crematogaster nigriceps* creates a denser canopy through the pruning of its trees which provides additional concealment of bird nests and thus increases the likelihood that the birds will nest in their trees. 
+At an Acacia Tree Height of 600 cm, the predicted probability of a nest occurrence is 0.2 (95% CI [0.00,0.99]) when *Crematogaster sjostedti* ants are present, 0.74 (95% CI[0.48,0.90]) when *Crematogaster mimosae* are present, and 1.00 (95% CI[1.00,1.00]) when *Crematogaster nigriceps* are present. Acacia tree height and ant species present interact to predict the probability of nest occurrence in Acacia trees. According to Figure 1, As Acacia tree height increases, the predicted probability of nest occurrence increases. Figure 1 also shows how both *Crematogaster mimosae* and *Crematogaster nigriceps* both had higher predicted nest occurrences than *Crematogaster sjostedti* likely because they are more aggressive defenders of the Acacia trees and by extension the bird nests. *Crematogaster nigriceps* in particular had the highest predicted nest occurences because in addition to being an aggressive defender, *Crematogaster nigriceps* creates a denser canopy through the pruning of its trees which provides additional concealment of bird nests and thus increases the likelihood that the birds will nest in their trees. 
 
 
 ## Problem 3. Affective and exploratory visualizations
@@ -333,7 +327,7 @@ Check that the data is normally distributed:
 
 # ggplot as base layer
 ggplot(
-  # using kelp data
+  # using my_data_clean data
   data = my_data_clean,
   # plotting temperature 
   mapping = aes(sample = computer_time)
@@ -478,7 +472,7 @@ ggplot(data = my_data_clean,
         panel.grid = element_blank())
 
 ```
-**Figure 2: There is no statistically significant difference in computer screen time between Weekdays and Weekends** Dark blue open points represent individual computer screen time observations on the weekdays whereas light blue open points represent individual computer screen time observations on the weekends. The filled in bigger points represents the mean computer screen time for both groups with the lines above and below the point representing one standard deviation above and below the mean. Data last updated: July 7, 2026.
+**Figure 2: There is no statistically significant difference in computer screen time between Weekdays and Weekends** Dark blue open points represent individual computer screen time observations on the weekdays whereas light blue open points represent individual computer screen time observations on the weekends. The filled in bigger points represents the mean computer screen time for both groups with the lines above and below the point representing one standard deviation above and below the mean. Data last updated: June 7, 2026.
 
 e. Write a caption\newline
 
@@ -486,7 +480,7 @@ Caption written above.
 
 f. Write about your results\newline
 
-We did not find a significant difference in computer scree time between weekdays (n = 35, mean = 234 minutes) and weekends (n = 14, mean = 190 minutes; Welch's two sampled t-test, t(29.3) = 1.50, p = 0.1454, $\alpha$ = 0.05). 
+We did not find a significant difference in computer screen time between weekdays (n = 35, mean = 234 minutes) and weekends (n = 14, mean = 190 minutes; Welch's two sampled t-test, t(29.3) = 1.50, p = 0.1454, $\alpha$ = 0.05). 
 
 We found a small (Cohen's d = 0.452) effect of the day of the week (Weekdays vs Weekends) on computer screen time. 
 
