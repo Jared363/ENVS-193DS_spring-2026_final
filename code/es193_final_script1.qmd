@@ -55,7 +55,7 @@ Our results suggest that distance to water edge predicts the probability of Amer
 
 c. Further analysis\newline
 
-Algae concentration is another variable that could influence the probability of American Avocet microhabitat use as algae is another important primary producer in aquatic ecosystems that influences food availability. It is a continuous predictor variable measured in mg dry weight/L water, and it can be collected in 1 liter containers with the dry weight measured in lab. 
+Algae concentration is another variable that could influence the probability of American Avocet microhabitat use as algae is another important primary producer in aquatic ecosystems that influences food availability. It is a continuous predictor variable measured in mg dry weight/L water, and it can be collected in 1 liter containers with the dry weight measured in a lab. 
 
 ## Problem 2. Data analysis
 
@@ -97,25 +97,25 @@ slice_sample(nests_clean,
 
 b. Response variable\newline
 
-For the nest occurence response variable, a 1 indicates that that a tree contained a nest, and 0 indicates that a tree was available for a nest. 
+For the nest occurence response variable, a 1 indicates that that an Acacia tree contained a nest, and 0 indicates that an Acacia tree was available for a nest. 
 
 c. Purpose of study\newline
 
-Tree height, one of the predictor variables, is a continuous variable. As tree height increases, the probability of nest occurrence would increase because the nests are further off the ground and harder to get to for predators which reduces nest predation, which can increase lifetime fitness in birds (Discussion, paragraph 1). In addition, taller trees likely have more branches and leaves which can create a denser canopy with or without the help of *C. nigriceps* that can provide further concealment of bird nests from predators (Discussion, paragraph 1).
+Tree height, one of the predictor variables, is a continuous variable. As tree height increases, the probability of nest occurrence would increase because the nests are further off the ground and harder to get to for predators, which reduces nest predation, which can increase lifetime fitness in birds (Discussion, paragraph 1). In addition, taller trees likely have more branches and leaves which can create a denser canopy with or without the help of *C. nigriceps* that can provide further concealment of bird nests from predators (Discussion, paragraph 2).
 
-Ant species, the other predictor variable, is a categorical variable with the four ant species representing four categories. The presence of *C. nigriceps* and *C. mimosae* would increase nest occurence as they are aggressive defenders of host trees and thus can reduce the risk of nest predation compared to *C. sjostedi* and *T. penzigi* which are less aggressive host tree defenders (Discussion, paragraph 1). In addition, *C. nigriceps* in particular can increase nest occurance because its pruning of the apial buds results in denser canopies which can provide further concealment of bird nests from predators (Discussion, paragraph 2).
+Ant species, the other predictor variable, is a categorical variable with the four ant species representing four categories. The presence of *C. nigriceps* and *C. mimosae* would increase nest occurence as they are aggressive defenders of host trees and thus can reduce the risk of nest predation compared to *C. sjostedi* and *T. penzigi* which are less aggressive host tree defenders (Discussion, paragraph 1). In addition, *C. nigriceps* in particular can increase nest occurance because its pruning of the apical buds results in denser canopies which can provide further concealment of bird nests from predators (Discussion, paragraph 2).
 
 d. Table of models\newline
 
 | Model number | height_cm | species_name | Interaction?              |  
 |--------------|:---------:|:------------:|:-------------------------:|
-| 0            |  X        |      X       |  No interaction (+)       |
-| 1            |  X        |      X       |  Yes Interaction (*)      | 
+| 1            |  X        |      X       |  No interaction  (+)      |
+| 2            |  X        |      X       |  Yes Interaction (*)      | 
 
 
 e. Run the models\newline
-
 ```{r}
+#|output: FALSE
 
 # running a generalized linear model using glm 
 #   and storing as nest_model_1 object
@@ -131,7 +131,8 @@ nest_model_1 <- glm(
 # display result of model 1
 nest_model_1
 
-
+# running a generalized linear model using glm 
+#   and storing as nest_model_2 object
 nest_model_2 <- glm(
                     # case_control as a response to height and species
                     #   with interaction (using a * instead of +)
@@ -146,8 +147,8 @@ nest_model_2
 
 ```
 
-f. Select the best model\newline
 
+f. Select the best model\newline
 ```{r}
 
 # AICc is Akaike's Information Criterion function
@@ -164,7 +165,6 @@ AICc(
 The best model as determined by Akaike's Information Criterion (AIC) had case factor as the response variable with tree height and ant species as interacting predictor variables. 
 
 g. Check the diagnostics\newline
-
 ```{r}
 #| fig-height: 8
 #| fig-width: 12
@@ -175,19 +175,24 @@ plot(
   simulateResiduals(nest_model_2)
 )
 
+
 ```
 
-The points follow the QQ line relatively closely indicating that the residuals of the model follow a uniform distribution. The not significant dispersion result tells us that our residuals are not more dispersed than expected from the uniform distribution mentioned in the prior sentence. The not sigificant result for the outlier test tells us that there do not appear to be any outliers that could affect the model coefficients or predictions. The plot on the right shows us that the homoscedasticity, or variance of residuals overtime, stay relatively constant over time. All of these results tell us that the data fits the model assumptions and thus we can use a logistic regression to predict values for the response variable of nest probability. 
+The points follow the QQ line relatively closely indicating that the residuals of the model follow a uniform distribution. The not significant result for the dispersion test tells us that our residuals are not more dispersed than expected from the uniform distribution mentioned in the prior sentence. The not significant result for the outlier test tells us that there do not appear to be any outliers that could affect the model coefficients or predictions. The plot on the right shows us that the homoscedasticity, or variance of residuals overtime, stay relatively constant over time. All of these results tell us that the data fits the model assumptions and thus we can use a logistic regression to predict values for the response variable of nest probability. 
 
 h. Visualize the model predictions\newline
 
 ```{r}
 
-# model predictions
+# creating model predictions and storing them as nest_predictions object
 nest_predictions <- ggpredict(
-  nest_model_2,   # model object
-  terms = c("height_cm[all]", "species_name")   # predictor (in quotation marks)
+  # model object
+  nest_model_2,  
+  # predictors (in quotation marks)
+  terms = c("height_cm[all]", "species_name") 
 ) |>
+  # rename group column to species_name
+  # renaming will help with consistent terminology for the visualization
   rename(species_name = group)
 
 ```
@@ -205,11 +210,13 @@ ggplot(data = nests_clean, # using nests_clean data
   # changing ant colors manually
   scale_color_manual(values = c("Crematogaster sjostedti" = "skyblue",
                                 "Crematogaster mimosae" = "orchid3",
-                                "Crematogaster nigriceps" = "springgreen3")) +
+                                "Crematogaster nigriceps" = "springgreen3")
+                     ) +
   # changing ant fill colors manually
   scale_fill_manual(values = c("Crematogaster sjostedti" = "skyblue",
                                 "Crematogaster mimosae" = "orchid3",
-                                "Crematogaster nigriceps" = "springgreen3")) +
+                                "Crematogaster nigriceps" = "springgreen3")
+                    ) +
   # geom points is first layer 
   geom_point(
              mapping = aes(x = height_cm, # x-axis is acacia tree height
@@ -239,7 +246,9 @@ ggplot(data = nests_clean, # using nests_clean data
   labs(x = "Height of Acacia Tree (cm)", 
        y = "Predicted Probability of Nest Presence", 
        color = "species_name", # color by ant species
-       title = "Predicted Nest Presence by Ant Species and Acacia Height (cm)") +
+       title = 
+         "Predicted Nest Presence by Ant Species and Acacia Height (cm)"
+       ) +
   # changing theme from default
   theme_minimal() +
   theme(
@@ -254,11 +263,10 @@ ggplot(data = nests_clean, # using nests_clean data
 **Figure 1: Predicted Probability of Bird Nest Occurence Differs By Ant Species and Tree Height** There are three panels for the three ant species where purple represents *Crematogaster mimosae*, green represents *Crematogaster nigriceps*, and blue represents *Crematogaster sjostedti*. The x-axis is the acaica tree height, measured in centimeters. The y-axis is the predicted probability of the presence of a bird nest in an acacia tree. The open circle points represent actual observations of nest presence or absence in the acacia trees. The darker lines represent the model predictions of the probability of the nest presence for a given ant species and tree height. The ribbons above and below the dark lines represent a 95% confidence interval for the predicted probability of nest presence. Data originally from: Lujan, E., Nielsen, R., Short, Z., Wicks, S., Nderitu Watetu, W., Malingati Khasoha, L., Palmer, T. M., Goheen, J. R., & Alston, J. M. (2023). Data, code, and metadata for: Symbiotic acacia ants drive nesting behavior by birds in an African savanna [Data set]. Zenodo. https://doi.org/10.5281/zenodo.8373322
 
 i. Write a caption for your figure\newline
-
 Caption below the figure above. 
 
-j. Calculate model predictions\newline
 
+j. Calculate model predictions\newline
 ```{r}
 
 # using ggpredict function to calculate 
@@ -276,7 +284,7 @@ ggpredict(
 
 k. Interpret your results\newline
 
-At an Acacia Tree Height of 600 cm, the predicted probability of a nest occurence is 0.2 (95% CI [0.00,0.99]) when *Crematogaster sjostedti* ants are present, 0.74 (95% CI[0.48,0.90]) when *Crematogaster mimosae* are present, and 1.00 (95% CI[1.00,1.00]) when *Crematogaster nigriceps* are present. Acacia tree height and ant species present interact to predict the probability of nest occurence in Acacia trees. As Acacia tree height increases, the predicted probability of nest occurence increases. Both *Crematogaster mimosae* and *Crematogaster nigriceps* both had higher predicted nest occurences than *Crematogaster sjostedti* likely because they are more aggressive defenders of the acacia trees and by extension the bird nests. *Crematogaster nigriceps* in particular had the highest predicted nest occurences because in addition to being an aggressive defender, *Crematogaster nigriceps* creates a denser canopy through the pruning of its trees which provides additional concealment of bird nests and thus increases the likelihood that the birds will nest in their trees. 
+At an Acacia Tree Height of 600 cm, the predicted probability of a nest occurrence is 0.2 (95% CI [0.00,0.99]) when *Crematogaster sjostedti* ants are present, 0.74 (95% CI[0.48,0.90]) when *Crematogaster mimosae* are present, and 1.00 (95% CI[1.00,1.00]) when *Crematogaster nigriceps* are present. Acacia tree height and ant species present interact to predict the probability of nest occurrence in Acacia trees. As Acacia tree height increases, the predicted probability of nest occurrence increases. Both *Crematogaster mimosae* and *Crematogaster nigriceps* both had higher predicted nest occurrences than *Crematogaster sjostedti* likely because they are more aggressive defenders of the Acacia trees and by extension the bird nests. *Crematogaster nigriceps* in particular had the highest predicted nest occurences because in addition to being an aggressive defender, *Crematogaster nigriceps* creates a denser canopy through the pruning of its trees which provides additional concealment of bird nests and thus increases the likelihood that the birds will nest in their trees. 
 
 
 ## Problem 3. Affective and exploratory visualizations
@@ -300,25 +308,21 @@ my_data_clean <- my_data |>
 
 a. Comparing visualizations\newline
 
-Compare and contrast your affective visualization from Homework 3 and the exploratory visualizations you made for Homework 2. In 1-3 sentences each, explain:
+One of the differences between my exploratory visualization and affective visualization is that the exploratory visualization contains more quantitative information on precise computer screen time amounts between the weekdays and weekends. Nevertheless, my affective visualization is able to convey more emotionality on the differences in screen time through the water color background and chosen imagery for the weekday and weekend pseudo box plots.\newline
 
-One of the differences between my exploratory visualization and affective visualization is that the exploratory visualization contains more quantitative information on precise computer screen time amounts between the weekdays and weekends. Nevertheless, my affective visualization is able to convey more emotionality on the differences in screen time through the water color background and chosen imagery for the weekdays and weekend pseudo-boxplots.\newline
-
-A similarity between the two visualizations is that they both include box plots that can generally show the reader which group, weekdays or weekends, had more computer screen time. They also both had ways of conveying which box plot was for which group with the exploratory visualization using words, and the affective visualization using a weekly calendar image to indicate weekdays vs weekends.\newline  
-
-What patterns (e.g. differences in means/counts/proportions/medians, trends through time, relationships between variables) do you see in each visualization? Are these different between visualizations? If so, why? If not, why not?
+A similarity between the two visualizations is that they both include box plots that can generally show the reader which group, weekdays or weekends, had more computer screen time. They also both had ways of conveying which box plot was for which group with the exploratory visualization using words, and the affective visualization using a weekly calendar image below the pseduo box plots to indicate weekdays vs weekends.\newline  
 
 In the exploratory visualization I can see that weekdays have higher median computer screen times and more observations on the weekdays. For the affective visualization I can see that in general weekdays have greater screen time and that the maximum screen time recorded on the weekdays is greater than the maximum recorded screen time on the weekends.\newline
 
-In the week 9 workshop, my peers gave me the feedback to increase the emotional contrast between the weekdays and weekends even more. I implemented that suggestion by adding dark clouds above the weekday boxplot, and adding a glimmer of light casted over the weekend box plot.\newline
+In the week 9 workshop, my peers gave me the feedback to increase the emotional contrast between the weekdays and weekends even more. I implemented that suggestion by adding dark clouds above the weekday box plot, and adding a glimmer of light cast over the weekend box plot.\newline
 
 b. Designing an analysis\newline
 
-One analysis I could apply to answer my research question of how my computer screen time compares on weekdays vs weekends is a two-sample t-test. This would be an appropriate test to answer my question of how computer screen time compare on weekdays vs weekends as it would compare the average screen time on weekdays vs weekends. It makes sense for the predictor variable as weekday vs weekend is a categorical predictor variables that can be used as the groups that I am comparing. It makes sense for the response variable of computer screen time as that is a continuous variable. 
+One analysis I could apply to answer my research question of how my computer screen time compares on weekdays vs weekends is a two-sample t-test. This would be an appropriate test to answer my question of how computer screen time compare on weekdays vs weekends as it would compare the average screen time between two sample groups: weekdays and weekends. It makes sense for the predictor variable as weekday vs weekend is a categorical predictor variables that can be used as the groups that I am comparing. It makes sense for the response variable of computer screen time as it is a continuous variable. 
 
 c. Check any assumptions and run your analysis\newline
 
-Checking that response variable is a continous variable:
+Checking that response variable is a continuous variable:
 Looking at my data I can confirm that computer screen time is a continuous variable measured in minutes.\newline 
 
 Checking for independent observations:
@@ -343,7 +347,7 @@ ggplot(
   theme_minimal()
 
 ```
-The qq points generally fall around the qq line with some tail off at the upper end. The computer_time response variable appears to be normally distributed enough. The central limi theorem also applies as there are more than 30 observations. 
+The qq points generally fall around the qq line with some tail off at the upper end. The computer_time response variable appears to be normally distributed overrall. In addition, the central limit theorem also applies as there are more than 30 observations. 
 
 Checking for whether the variances are equal or not:
 ```{r}
@@ -362,7 +366,8 @@ The true ratio of variances is not equal to 1, and thus I will perform a Welch's
 Running my analysis: Welch's two sample t-test
 ```{r}
 
-# performing a t-test using t.test function and storing it as my_data_t_test
+# performing a t-test using t.test function 
+#   and storing it as my_data_t_test
 my_data_t_test <- t.test(
   # response ~ grouping
   computer_time ~ weekday,
@@ -395,10 +400,10 @@ my_data_cohens_d
 ```
 
 
-
 d. Create a visualization
 ```{r}
 
+# calculating summary statistics to include in the visualization
 # store my_data_clean summary data as the object my_data_summary
 my_data_summary <- my_data_clean |>
   # group by the weekday vs weekend
@@ -415,7 +420,6 @@ my_data_summary <- my_data_clean |>
 
 # display my_data_summary data frame
 my_data_summary
-
 
 ```
 
